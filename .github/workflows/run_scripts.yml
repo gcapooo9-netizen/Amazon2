@@ -24,7 +24,16 @@ jobs:
         run: pip install requests beautifulsoup4 cloudscraper
 
       - name: Run Monitor Script
-        run: python bot.py
+        run: |
+          echo "الملفات الموجودة في المشروع:"
+          ls -la
+          SCRIPT=$(find . -maxdepth 2 -iname "*.py" | head -n 1)
+          if [ -z "$SCRIPT" ]; then
+            echo "❌ مفيش أي ملف بايثون (.py) محفوظ في المشروع! ارجع لصفحة Code واعمل ملف bot.py واحفظه."
+            exit 1
+          fi
+          echo "🚀 جاري تشغيل الملف: $SCRIPT"
+          python "$SCRIPT"
 
       - name: Save updated prices to repository
         run: |
@@ -33,4 +42,3 @@ jobs:
           git add all_categories_prices.json || true
           git diff --staged --quiet || git commit -m "Update prices"
           git push
-          
